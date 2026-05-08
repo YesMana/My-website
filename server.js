@@ -58,7 +58,7 @@ if (!fs.existsSync(SETTINGS_FILE)) {
 app.post('/api/login', (req, res) => {
     const { password } = req.body;
     // Simple hardcoded password for the dashboard
-    if (password === 'admin123') {
+    if (password === 'Manu@12788520#@') {
         res.json({ success: true, token: 'fake-jwt-token-123' });
     } else {
         res.status(401).json({ success: false, error: 'Invalid password' });

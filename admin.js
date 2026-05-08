@@ -101,7 +101,7 @@ async function fetchReviews() {
             div.className = 'review-item';
             div.innerHTML = `
                 <div style="display: flex; align-items: center;">
-                    ${review.imageUrl ? `<img src="${review.imageUrl}" alt="Screenshot">` : ''}
+                    ${review.imageUrl ? `<img src="${review.imageUrl}" alt="Screenshot" style="cursor: pointer; border: 1px solid var(--glass-border); transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="window.open('${review.imageUrl}', '_blank')">` : ''}
                     <div class="review-content">
                         <h4>${review.clientName} <small>(${review.platform})</small></h4>
                         <p style="font-size: 0.85rem; color: #a0aec0;">${review.text || 'No description'}</p>
