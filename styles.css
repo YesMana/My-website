@@ -298,7 +298,9 @@ a {
     height: 100%;
     object-fit: cover;
     border-radius: 12px;
-    background-color: var(--surface-light);
+    background-color: transparent;
+    -webkit-mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 75%);
+    mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 75%);
 }
 
 .card-info {
