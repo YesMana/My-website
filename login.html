@@ -66,9 +66,9 @@
             e.preventDefault();
             const password = document.getElementById('password').value;
             try {
-                const res = await fetch('/api/login', {
+                const res = await fetch('/api/login?t=' + Date.now(), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
                     body: JSON.stringify({ password })
                 });
                 const data = await res.json();
