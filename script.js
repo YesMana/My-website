@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "events": {
                     "onhover": {
                         "enable": true,
-                        "mode": "grab"
+                        "mode": "repulse"
                     },
                     "onclick": {
                         "enable": true,
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "speed": 3
                     },
                     "repulse": {
-                        "distance": 200,
+                        "distance": 150,
                         "duration": 0.4
                     },
                     "push": {
