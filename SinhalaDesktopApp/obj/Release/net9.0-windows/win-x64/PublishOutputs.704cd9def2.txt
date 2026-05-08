@@ -1,0 +1,2 @@
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\publish\SinhalaTool.pdb
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\publish\SinhalaTool.exe

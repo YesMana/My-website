@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "m/dovPbSLps=",
+  "success": true,
+  "projectFilePath": "D:\\mywebsite\\SinhalaDesktopApp\\SinhalaTool.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dilma\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.11\\microsoft.net.illink.tasks.9.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}

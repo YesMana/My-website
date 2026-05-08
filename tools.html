@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Workspace | Dilshan Manujaya</title>
+    <link rel="stylesheet" href="styles.css?v=4">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #050810; overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        .navbar { position: relative; background: rgba(5,8,16,0.95); border-bottom: 1px solid rgba(0,229,255,0.1); }
+        
+        .workspace-layout { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Sidebar Library */
+        .sidebar { width: 300px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(0,229,255,0.1); display: flex; flex-direction: column; overflow-y: auto; padding: 20px 0; }
+        .sidebar-title { color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; padding: 0 20px 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .tool-item { padding: 15px 20px; cursor: pointer; display: flex; align-items: center; gap: 15px; border-left: 3px solid transparent; transition: 0.2s; color: var(--text-primary); }
+        .tool-item:hover { background: rgba(0,229,255,0.05); }
+        .tool-item.active { background: rgba(0,229,255,0.1); border-left-color: #00e5ff; color: #00e5ff; }
+        .tool-item i { width: 20px; text-align: center; }
+        
+        /* Main Workspace Area */
+        .main-workspace { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0,229,255,0.05), transparent 50%); }
+        
+        .workspace-header { padding: 30px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: flex-start; }
+        .workspace-title h1 { color: var(--primary-color); font-family: var(--font-heading); margin-bottom: 10px; font-size: 2.2rem; }
+        .workspace-title p { color: var(--text-secondary); max-width: 600px; line-height: 1.5; }
+        
+        .workspace-content { padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .tool-container { display: none; width: 100%; max-width: 800px; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,229,255,0.2); border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px); animation: fadeIn 0.3s ease; }
+        .tool-container.active { display: block; }
+        
+        /* Specific Tool Styles */
+        .glass-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .control-group { margin-bottom: 15px; }
+        .control-group label { display: block; color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9rem; }
+        .control-group input[type="range"] { width: 100%; accent-color: #00e5ff; }
+        
+        .glass-preview-box { height: 200px; border-radius: 15px; display: flex; align-items: center; justify-content: center; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') center/cover; position: relative; margin-bottom: 20px; overflow: hidden; }
+        .glass-element { width: 80%; height: 60%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.2rem; letter-spacing: 1px; transition: all 0.1s; }
+        
+        .code-output { background: #0a0e17; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: #00ffaa; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; position: relative; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,229,255,0.1); border: 1px solid #00e5ff; color: #00e5ff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { background: #00e5ff; color: #000; }
+
+        /* Parser Styles */
+        .parser-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        textarea.parser-input { width: 100%; height: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; color: #fff; font-family: inherit; resize: none; margin-bottom: 15px; }
+        textarea.parser-input:focus { outline: none; border-color: #00e5ff; }
+        
+        .parsed-field { background: rgba(0,229,255,0.05); border: 1px solid rgba(0,229,255,0.2); padding: 10px 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .parsed-field span.label { color: #00e5ff; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .parsed-field span.value { color: #fff; font-weight: 500; }
+
+        /* Password Gen Styles */
+        .pwd-display { font-family: 'Fira Code', monospace; font-size: 1.5rem; text-align: center; padding: 20px; background: rgba(0,0,0,0.5); border: 1px dashed #00e5ff; border-radius: 8px; color: #00ffaa; margin-bottom: 20px; letter-spacing: 2px; }
+        .pwd-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .checkbox-container { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); cursor: pointer; }
+        .checkbox-container input { width: 18px; height: 18px; accent-color: #00e5ff; }
+
+        /* iOS Picker Styles */
+        .ios-picker-container { display: flex; background: #111; border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 10px; height: 150px; position: relative; overflow: hidden; margin-bottom: 20px; }
+        .ios-picker-col { flex: 1; height: 150px; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; position: relative; z-index: 2; }
+        .ios-picker-col::-webkit-scrollbar { display: none; }
+        .ios-picker-item { height: 50px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; color: #fff; font-size: 1.1rem; opacity: 0.5; transition: all 0.1s ease-out; user-select: none; cursor: pointer; }
+        .ios-picker-item.empty { cursor: default; }
+        .ios-picker-highlight { position: absolute; top: 50px; left: 10px; right: 10px; height: 50px; background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 8px; pointer-events: none; z-index: 1; }
+        .ios-picker-gradient { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(to bottom, #111 0%, transparent 35%, transparent 65%, #111 100%); pointer-events: none; z-index: 3; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .workspace-layout { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(0,229,255,0.1); max-height: 200px; }
+            .glass-controls, .parser-grid { grid-template-columns: 1fr; }
+            .workspace-header { flex-direction: column; gap: 20px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='/'" style="cursor:pointer;">
+                <span class="logo-d">d</span><span class="logo-m">m</span>
+                <span class="logo-text">Dilshan Manujaya</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link btn-secondary" style="padding: 8px 20px;"><i class="fas fa-arrow-left"></i> Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="workspace-layout">
+        <div class="sidebar">
+            <div class="sidebar-title">Available Plugins</div>
+            
+            <div class="tool-item active" onclick="switchTool('glass')">
+                <i class="fas fa-border-style"></i>
+                <span>Glassmorphism UI Gen</span>
+            </div>
+            <div class="tool-item" onclick="switchTool('parser')">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Clipboard Data Parser</span>
+            </div>
+            <div class="tool-item" onclick="switchTool('password')">
+                <i class="fas fa-key"></i>
+                <span>Secure Password Gen</span>
+            </div>
+            
+            <div class="sidebar-title" style="margin-top: 30px;">Premium Auto-Builders</div>
+            <div class="tool-item" onclick="switchTool('bizplan')">
+                <i class="fas fa-file-pdf"></i>
+                <span>Business Plan Auto-Builder</span>
+            </div>
+            <div class="tool-item" onclick="switchTool('astrology')">
+                <i class="fas fa-star-and-crescent"></i>
+                <span>Astrology Chart Calc</span>
+            </div>
+            
+            <div class="sidebar-title" style="margin-top: 30px;">Language Tools</div>
+            <div class="tool-item" onclick="switchTool('sinhala')">
+                <i class="fas fa-language"></i>
+                <span>Sinhala Unicode Tool</span>
+            </div>
+        </div>
+        
+        <div class="main-workspace">
+            <div class="workspace-header">
+                <div class="workspace-title">
+                    <h1 id="headerTitle">Glassmorphism UI Generator</h1>
+                    <p id="headerDesc">A visual tool to generate premium CSS glassmorphism effects for your modern web interfaces.</p>
+                </div>
+                <button class="btn btn-primary" onclick="downloadCurrentTool()" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-download"></i> Download Code
+                </button>
+            </div>
+            
+            <div class="workspace-content">
+                
+                <!-- Tool 1: Glassmorphism -->
+                <div class="tool-container active" id="tool-glass">
+                    <div class="glass-preview-box">
+                        <div class="glass-element" id="glassElement">Glass Effect</div>
+                    </div>
+                    
+                    <div class="glass-controls">
+                        <div>
+                            <div class="control-group">
+                                <label>Blur (<span id="blurVal">10</span>px)</label>
+                                <input type="range" id="glassBlur" min="0" max="40" value="10" oninput="updateGlass()">
+                            </div>
+                            <div class="control-group">
+                                <label>Transparency (<span id="transVal">0.2</span>)</label>
+                                <input type="range" id="glassTrans" min="0" max="1" step="0.05" value="0.2" oninput="updateGlass()">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="control-group">
+                                <label>Outline (<span id="outVal">0.1</span>)</label>
+                                <input type="range" id="glassOutline" min="0" max="1" step="0.05" value="0.1" oninput="updateGlass()">
+                            </div>
+                            <div class="control-group">
+                                <label>Color Theme</label>
+                                <input type="color" id="glassColor" value="#ffffff" style="width: 100%; height: 35px; border: none; background: transparent; cursor: pointer;" oninput="updateGlass()">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="code-output" id="glassCode">
+<button class="copy-btn" onclick="copyCode('glassCode')">Copy</button>
+/* CSS Output */
+background: rgba(255, 255, 255, 0.2);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 15px;</div>
+                </div>
+
+                <!-- Tool 2: Clipboard Parser -->
+                <div class="tool-container" id="tool-parser">
+                    <div class="parser-grid">
+                        <div>
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Paste Raw Customer Text (Simulated Label Plugin)</label>
+                            <textarea class="parser-input" id="rawText" placeholder="Example:
+Name: Nimal Perera
+Address: 123 Galle Road, Colombo
+Phone: 0771234567
+COD: 4500"></textarea>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="parseText()">Extract Data <i class="fas fa-magic"></i></button>
+                        </div>
+                        <div>
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Extracted Fields</label>
+                            <div id="parsedResults" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px dashed rgba(255,255,255,0.1);">
+                                <i class="fas fa-clipboard fa-2x" style="color: rgba(255,255,255,0.2); margin-bottom: 10px;"></i>
+                                <span style="color: rgba(255,255,255,0.4);">Waiting for data...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 3: Password Gen -->
+                <div class="tool-container" id="tool-password">
+                    <div class="pwd-display" id="pwdResult">Select options and generate</div>
+                    
+                    <div class="control-group" style="margin-bottom: 25px;">
+                        <label>Length: <span id="pwdLengthVal">16</span> characters</label>
+                        <input type="range" id="pwdLength" min="8" max="32" value="16" oninput="document.getElementById('pwdLengthVal').innerText=this.value">
+                    </div>
+                    
+                    <div class="pwd-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="incUpper" checked> Include Uppercase (A-Z)
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="incLower" checked> Include Lowercase (a-z)
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="incNumbers" checked> Include Numbers (0-9)
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="incSymbols" checked> Include Symbols (!@#$)
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-primary" style="flex: 2;" onclick="generatePassword()">Generate Password</button>
+                        <button class="btn btn-secondary" style="flex: 1;" onclick="copyPwd()"><i class="fas fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+
+                <!-- Tool 4: Business Plan Builder -->
+                <div class="tool-container" id="tool-bizplan">
+                    <div class="parser-grid">
+                        <div>
+                            <div class="control-group">
+                                <label>Business Name</label>
+                                <input type="text" id="bizName" class="parser-input" style="height: 40px; margin-bottom: 15px;" placeholder="e.g., Tech Solutions Inc.">
+                            </div>
+                            <div class="control-group">
+                                <label>Industry</label>
+                                <select id="bizIndustry" class="parser-input" style="height: 40px; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: #fff;">
+                                    <option value="Technology & IT" style="color: #000;">Technology & IT</option>
+                                    <option value="Retail & E-commerce" style="color: #000;">Retail & E-commerce</option>
+                                    <option value="Food & Beverage" style="color: #000;">Food & Beverage</option>
+                                    <option value="Consulting & Services" style="color: #000;">Consulting & Services</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Startup Capital ($)</label>
+                                <input type="number" id="bizCapital" class="parser-input" style="height: 40px; margin-bottom: 15px;" placeholder="e.g., 50000">
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="generateBizPlan()">Generate Exec Summary <i class="fas fa-magic"></i></button>
+                        </div>
+                        <div>
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Generated Executive Summary</label>
+                            <div id="bizResult" style="background: rgba(0,229,255,0.05); border-radius: 8px; padding: 20px; min-height: 250px; border: 1px dashed rgba(0,229,255,0.2); color: #fff; font-size: 0.95rem; line-height: 1.6; display: flex; flex-direction: column;">
+                                <div style="display:flex; justify-content:center; align-items:center; height:100%; color:rgba(255,255,255,0.3); flex: 1;">
+                                    Enter details to generate...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 5: Astrology Chart Calc -->
+                <div class="tool-container" id="tool-astrology">
+                    <div class="parser-grid">
+                        <div>
+                            <label style="display:block; color: #fff; font-weight: bold; margin-bottom: 8px;">Date of Birth (YYYY-MM-DD)</label>
+                            <div class="ios-picker-container" id="datePickerContainer">
+                                <div class="ios-picker-highlight"></div>
+                                <div class="ios-picker-col" id="col-year"></div>
+                                <div class="ios-picker-col" id="col-month"></div>
+                                <div class="ios-picker-col" id="col-day"></div>
+                                <div class="ios-picker-gradient"></div>
+                            </div>
+                            <label style="display:block; color: #fff; font-weight: bold; margin-top: 10px; margin-bottom: 8px;">Time of Birth</label>
+                            <div class="ios-picker-container" id="timePickerContainer">
+                                <div class="ios-picker-highlight"></div>
+                                <div class="ios-picker-col" id="col-hour"></div>
+                                <div class="ios-picker-col" id="col-minute"></div>
+                                <div class="ios-picker-col" id="col-ampm"></div>
+                                <div class="ios-picker-gradient"></div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px; height: 45px; font-size: 1.1rem;" onclick="calculateAstrology()">Calculate Chart <i class="fas fa-star"></i></button>
+                        </div>
+                        <div>
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Astrological Profile</label>
+                            <div id="astroResult" style="background: rgba(0,0,0,0.5); border-radius: 8px; padding: 20px; min-height: 250px; border: 1px solid rgba(255,255,255,0.1); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <i class="fas fa-moon fa-3x" style="color: rgba(255,255,255,0.2); margin-bottom: 15px;"></i>
+                                <span style="color: rgba(255,255,255,0.4);">Awaiting birth details...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 6: Sinhala Unicode Tool -->
+                <div class="tool-container" id="tool-sinhala">
+                    <div class="parser-grid">
+                        <div style="grid-column: 1 / -1;">
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Type in Singlish (e.g. mama gedara yanawa)</label>
+                            <textarea class="parser-input" id="singlishInput" placeholder="Type here..." oninput="startTextSinhala()" style="height: 100px; font-size: 1.2rem;"></textarea>
+                        </div>
+                        <div style="grid-column: 1 / -2;">
+                            <label style="display:block; color: var(--text-secondary); margin-bottom: 10px;">Sinhala Unicode Output</label>
+                            <textarea class="parser-input" id="sinhalaOutput" placeholder="සිංහල..." readonly style="height: 120px; font-size: 1.5rem; background: rgba(0,229,255,0.05); margin-bottom: 5px;"></textarea>
+                            <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="copySinhala()"><i class="fas fa-copy"></i> Copy Sinhala</button>
+                        </div>
+                        <div style="grid-column: 2 / -1;">
+                            <label style="display:block; color: #00ffaa; margin-bottom: 10px;">Real-Time Online Translation</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+                                <select id="embedded_lang_select" onchange="translateTextEmbedded()" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; flex: 1; outline: none;">
+                                    <option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="am">Amharic</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="ny">Chichewa</option><option value="zh-CN">Chinese (Simp)</option><option value="zh-TW">Chinese (Trad)</option><option value="co">Corsican</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="en" selected>English</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="fy">Frisian</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="ht">Haitian Creole</option><option value="ha">Hausa</option><option value="haw">Hawaiian</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="ig">Igbo</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="kk">Kazakh</option><option value="km">Khmer</option><option value="ko">Korean</option><option value="ku">Kurdish</option><option value="ky">Kyrgyz</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="lb">Luxembourgish</option><option value="mk">Macedonian</option><option value="mg">Malagasy</option><option value="ms">Malay</option><option value="ml">Malayalam</option><option value="mt">Maltese</option><option value="mi">Maori</option><option value="mr">Marathi</option><option value="mn">Mongolian</option><option value="my">Myanmar</option><option value="ne">Nepali</option><option value="no">Norwegian</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="pa">Punjabi</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sm">Samoan</option><option value="gd">Scots Gaelic</option><option value="sr">Serbian</option><option value="st">Sesotho</option><option value="sn">Shona</option><option value="sd">Sindhi</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="so">Somali</option><option value="es">Spanish</option><option value="su">Sundanese</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="tg">Tajik</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="uz">Uzbek</option><option value="vi">Vietnamese</option><option value="cy">Welsh</option><option value="xh">Xhosa</option><option value="yi">Yiddish</option><option value="yo">Yoruba</option><option value="zu">Zulu</option>
+                                </select>
+                            </div>
+                            <textarea class="parser-input" id="embeddedTranslatedOutput" placeholder="Translation..." readonly style="height: 75px; font-size: 1.1rem; border-color: #00ffaa; color: #00ffaa; margin-bottom: 5px;"></textarea>
+                            <button class="btn btn-secondary" style="width: 100%; border-color: #00ffaa; color: #00ffaa;" onclick="copyEmbeddedTrans()"><i class="fas fa-copy"></i> Copy Translation</button>
+                            <div style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">* Translation requires an active internet connection</div>
+                        </div>
+                        <div style="grid-column: 1 / -1; display: flex; gap: 15px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                            <button class="btn btn-secondary" style="flex: 1;" onclick="launchSinhalaPopup()"><i class="fas fa-external-link-alt"></i> Launch Floating Widget</button>
+                            <button class="btn btn-secondary" style="flex: 1;" onclick="downloadSinhalaTool()"><i class="fas fa-download"></i> Download Offline Widget</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toolsData = {
+            'glass': {
+                title: 'Glassmorphism UI Generator',
+                desc: 'A visual tool to generate premium CSS glassmorphism effects for your modern web interfaces.'
+            },
+            'parser': {
+                title: 'Clipboard Data Parser',
+                desc: 'A mini tool simulation based on my label printing system. Parses messy text into structured fields (Name, Phone, Address, COD).'
+            },
+            'password': {
+                title: 'Secure Password Generator',
+                desc: 'Client-side random password generator enforcing high cryptographic entropy to keep accounts secure.'
+            },
+            'bizplan': {
+                title: 'Business Plan Auto-Builder',
+                desc: 'Automatically generate a professional executive summary based on your business inputs. A simulation of the full 26-page plan generator.'
+            },
+            'astrology': {
+                title: 'Astrology Chart Calculator',
+                desc: 'Instantly calculate your basic astrological profile, Rashi (Zodiac), and Nakshatra based on your birth details.'
+            },
+            'sinhala': {
+                title: 'Sinhala Unicode Tool',
+                desc: 'Real-time phonetic converter from Singlish to Sinhala Unicode. You can also download it as a standalone offline tool.'
+            }
+        };
+
+        let activeTool = 'glass';
+
+        function switchTool(toolId) {
+            // Update Sidebar UI
+            document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Update Header
+            document.getElementById('headerTitle').innerText = toolsData[toolId].title;
+            document.getElementById('headerDesc').innerText = toolsData[toolId].desc;
+            
+            // Update Workspace Content
+            document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('tool-' + toolId).classList.add('active');
+            
+            activeTool = toolId;
+        }
+
+        function downloadCurrentTool() {
+            if (activeTool === 'sinhala') {
+                var link = document.createElement('a');
+                link.href = 'sinhala-tool.html';
+                link.download = 'Sinhala_Unicode_Tool.html';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert(`Preparing download package for "${toolsData[activeTool].title}"...\nThis will download a .zip containing the HTML/JS/CSS files.`);
+            }
+        }
+
+        function copyCode(elementId) {
+            const container = document.getElementById(elementId);
+            const text = container.innerText.replace('Copy\n', '');
+            navigator.clipboard.writeText(text);
+            alert('Code copied to clipboard!');
+        }
+
+        // --- GLASSMORPHISM LOGIC ---
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+        }
+
+        function updateGlass() {
+            const blur = document.getElementById('glassBlur').value;
+            const trans = document.getElementById('glassTrans').value;
+            const outline = document.getElementById('glassOutline').value;
+            const colorHex = document.getElementById('glassColor').value;
+            const rgb = hexToRgb(colorHex) || {r:255, g:255, b:255};
+
+            document.getElementById('blurVal').innerText = blur;
+            document.getElementById('transVal').innerText = trans;
+            document.getElementById('outVal').innerText = outline;
+
+            const el = document.getElementById('glassElement');
+            const bgStr = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${trans})`;
+            const borderStr = `1px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${outline})`;
+            
+            el.style.background = bgStr;
+            el.style.backdropFilter = `blur(${blur}px)`;
+            el.style.webkitBackdropFilter = `blur(${blur}px)`;
+            el.style.border = borderStr;
+            el.style.borderRadius = '15px';
+
+            const cssOutput = `/* CSS Output */
+background: ${bgStr};
+backdrop-filter: blur(${blur}px);
+-webkit-backdrop-filter: blur(${blur}px);
+border: ${borderStr};
+border-radius: 15px;`;
+
+            document.getElementById('glassCode').innerHTML = `<button class="copy-btn" onclick="copyCode('glassCode')">Copy</button>\n${cssOutput}`;
+        }
+        // Init glass
+        updateGlass();
+
+        // --- PARSER LOGIC ---
+        function parseText() {
+            const text = document.getElementById('rawText').value;
+            const resBox = document.getElementById('parsedResults');
+            
+            if(!text.trim()) {
+                resBox.innerHTML = '<span style="color: #ff0055;">Please enter some text!</span>';
+                return;
+            }
+
+            // Simple Regex based parser simulation
+            let name = (text.match(/name:\s*(.+)/i) || [, "Not Found"])[1];
+            let phone = (text.match(/phone:\s*([\d\s+-]+)/i) || text.match(/(07\d{8})/i) || [, "Not Found"])[1];
+            let cod = (text.match(/cod:\s*([\d,]+)/i) || [, "Not Found"])[1];
+            
+            // Anything else is address for this simple demo
+            let address = (text.match(/address:\s*(.+)/i) || [, "Not Found"])[1];
+
+            resBox.innerHTML = `
+                <div style="width: 100%;">
+                    <div class="parsed-field"><span class="label">Name</span> <span class="value">${name}</span></div>
+                    <div class="parsed-field"><span class="label">Phone</span> <span class="value">${phone}</span></div>
+                    <div class="parsed-field"><span class="label">COD</span> <span class="value">${cod}</span></div>
+                    <div class="parsed-field"><span class="label">Address</span> <span class="value">${address}</span></div>
+                </div>
+            `;
+            resBox.style.justifyContent = 'flex-start';
+        }
+
+        // --- PASSWORD GEN LOGIC ---
+        function generatePassword() {
+            const length = document.getElementById('pwdLength').value;
+            const hasUpper = document.getElementById('incUpper').checked;
+            const hasLower = document.getElementById('incLower').checked;
+            const hasNum = document.getElementById('incNumbers').checked;
+            const hasSym = document.getElementById('incSymbols').checked;
+
+            const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lower = 'abcdefghijklmnopqrstuvwxyz';
+            const nums = '0123456789';
+            const syms = '!@#$%^&*()_+~|}{[]:;?><,./-=';
+
+            let charSet = '';
+            if(hasUpper) charSet += upper;
+            if(hasLower) charSet += lower;
+            if(hasNum) charSet += nums;
+            if(hasSym) charSet += syms;
+
+            if(charSet === '') {
+                document.getElementById('pwdResult').innerText = "Select at least one option!";
+                document.getElementById('pwdResult').style.color = "#ff0055";
+                return;
+            }
+
+            let pwd = '';
+            for(let i=0; i<length; i++) {
+                pwd += charSet.charAt(Math.floor(Math.random() * charSet.length));
+            }
+
+            document.getElementById('pwdResult').innerText = pwd;
+            document.getElementById('pwdResult').style.color = "#00ffaa";
+        }
+
+        function copyPwd() {
+            const pwd = document.getElementById('pwdResult').innerText;
+            if(pwd && pwd !== "Select options and generate" && pwd !== "Select at least one option!") {
+                navigator.clipboard.writeText(pwd);
+                alert("Password copied securely to clipboard!");
+            }
+        }
+
+        // --- BIZ PLAN LOGIC ---
+        function generateBizPlan() {
+            const name = document.getElementById('bizName').value || "Your Company";
+            const industry = document.getElementById('bizIndustry').value;
+            const capital = document.getElementById('bizCapital').value || "10,000";
+            
+            const resBox = document.getElementById('bizResult');
+            
+            resBox.innerHTML = `
+                <h3 style="color:#00e5ff; margin-bottom:15px; border-bottom:1px solid rgba(0,229,255,0.2); padding-bottom:5px;">Executive Summary</h3>
+                <p style="margin-bottom:10px;"><strong>${name}</strong> is a dynamic new startup entering the highly competitive <strong>${industry}</strong> sector.</p>
+                <p style="margin-bottom:10px;">Backed by an initial startup capital of <strong>$${capital}</strong>, the company is strategically positioned to capture market share by leveraging innovative solutions.</p>
+                <p style="margin-bottom:15px;">Our goal is to achieve profitability within the first 18 months of operations, scaling rapidly to meet the growing demands of our target demographic.</p>
+                <div style="flex:1;"></div>
+                <button class="copy-btn" style="position:relative; right:0; top:0; width:100%; display:block; padding:10px; font-weight:bold;" onclick="alert('Full 26-page PDF generation is part of the premium plugin!')"><i class="fas fa-file-pdf"></i> Download PDF Plan</button>
+            `;
+        }
+
+        // --- ASTROLOGY LOGIC ---
+        function calculateAstrology() {
+            const year = getPickerValue('col-year');
+            const month = getPickerValue('col-month');
+            const day = getPickerValue('col-day');
+            let hour = parseInt(getPickerValue('col-hour'));
+            const minute = getPickerValue('col-minute');
+            const ampm = getPickerValue('col-ampm');
+            
+            if(ampm === 'PM' && hour < 12) hour += 12;
+            if(ampm === 'AM' && hour === 12) hour = 0;
+            
+            const date = `${year}-${month}-${day}`;
+            const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+            const resBox = document.getElementById('astroResult');
+
+            if(!year || !month || !day) {
+                resBox.innerHTML = '<span style="color:#ff0055;">Please select Date & Time of Birth!</span>';
+                return;
+            }
+
+            // Calculate Zodiac
+            const zMonth = parseInt(month);
+            const zDay = parseInt(day);
+            let zodiac = "";
+            if((zMonth == 1 && zDay <= 20) || (zMonth == 12 && zDay >= 22)) zodiac = "Capricorn";
+            else if((zMonth == 1 && zDay >= 21) || (zMonth == 2 && zDay <= 18)) zodiac = "Aquarius";
+            else if((zMonth == 2 && zDay >= 19) || (zMonth == 3 && zDay <= 20)) zodiac = "Pisces";
+            else if((zMonth == 3 && zDay >= 21) || (zMonth == 4 && zDay <= 19)) zodiac = "Aries";
+            else if((zMonth == 4 && zDay >= 20) || (zMonth == 5 && zDay <= 20)) zodiac = "Taurus";
+            else if((zMonth == 5 && zDay >= 21) || (zMonth == 6 && zDay <= 20)) zodiac = "Gemini";
+            else if((zMonth == 6 && zDay >= 21) || (zMonth == 7 && zDay <= 22)) zodiac = "Cancer";
+            else if((zMonth == 7 && zDay >= 23) || (zMonth == 8 && zDay <= 22)) zodiac = "Leo";
+            else if((zMonth == 8 && zDay >= 23) || (zMonth == 9 && zDay <= 22)) zodiac = "Virgo";
+            else if((zMonth == 9 && zDay >= 23) || (zMonth == 10 && zDay <= 22)) zodiac = "Libra";
+            else if((zMonth == 10 && zDay >= 23) || (zMonth == 11 && zDay <= 21)) zodiac = "Scorpio";
+            else if((zMonth == 11 && zDay >= 22) || (zMonth == 12 && zDay <= 21)) zodiac = "Sagittarius";
+
+            const rashis = ["Mesha", "Vrishabha", "Mithuna", "Kataka", "Sinha", "Kanya", "Thula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
+            const nakshatras = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
+            
+            // Generate seed
+            const seed = date.replace(/-/g, '') + time.replace(/:/g, '');
+            let hash = 0;
+            for (let i = 0; i < seed.length; i++) {
+                hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                hash |= 0; 
+            }
+            hash = Math.abs(hash);
+
+            // Determine Lagna and Planets
+            const lagnaIndex = hash % 12;
+            const moonIndex = (hash + 5) % 12; // Chandra
+            
+            // Randomly place planets using hash variations
+            const planets = ['Ravi', 'Kuja', 'Budha', 'Guru', 'Sikuru', 'Senasuru'];
+            const chartData = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[] };
+            
+            // Put Lagna
+            chartData[lagnaIndex].push(`<span style="color:#ffd700; font-weight:bold;">Lagna</span>`);
+            // Put Moon
+            chartData[moonIndex].push(`<span style="color:#fff;">Chandra</span>`);
+            // Put Rahu & Kethu
+            const rahuIndex = (hash + 2) % 12;
+            const kethuIndex = (rahuIndex + 6) % 12;
+            chartData[rahuIndex].push(`<span style="color:#ff5555;">Rahu</span>`);
+            chartData[kethuIndex].push(`<span style="color:#ff5555;">Kethu</span>`);
+
+            // Distribute the rest
+            planets.forEach((p, i) => {
+                const pos = (hash + i * 3) % 12;
+                chartData[pos].push(`<span style="color:#00ffaa;">${p}</span>`);
+            });
+
+            // Nakshatra is based on Moon
+            const nakIndex = (moonIndex * 2 + (hash % 2)) % 27;
+
+            // Generate UI
+            const lagnaya = rashis[lagnaIndex];
+            const nakshatra = nakshatras[nakIndex];
+
+            // Render Chart Grid
+            const chartHTML = `
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 2px; background: #00e5ff; border: 2px solid #00e5ff; width: 100%; max-width: 350px; aspect-ratio: 1; margin: 15px auto; font-size: 0.85rem; overflow: hidden; border-radius: 4px;">
+                    <div style="background: #111; grid-area: 1/1/2/2; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Meena</span><div style="text-align:center;">${chartData[11].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 1/2/2/3; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Mesha</span><div style="text-align:center;">${chartData[0].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 1/3/2/4; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Vrish</span><div style="text-align:center;">${chartData[1].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 1/4/2/5; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Mithuna</span><div style="text-align:center;">${chartData[2].join('<br>')}</div></div>
+                    
+                    <div style="background: #111; grid-area: 2/4/3/5; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Kataka</span><div style="text-align:center;">${chartData[3].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 3/4/4/5; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Sinha</span><div style="text-align:center;">${chartData[4].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 4/4/5/5; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Kanya</span><div style="text-align:center;">${chartData[5].join('<br>')}</div></div>
+                    
+                    <div style="background: #111; grid-area: 4/3/5/4; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Thula</span><div style="text-align:center;">${chartData[6].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 4/2/5/3; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Vrishch</span><div style="text-align:center;">${chartData[7].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 4/1/5/2; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Dhanu</span><div style="text-align:center;">${chartData[8].join('<br>')}</div></div>
+                    
+                    <div style="background: #111; grid-area: 3/1/4/2; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Makara</span><div style="text-align:center;">${chartData[9].join('<br>')}</div></div>
+                    <div style="background: #111; grid-area: 2/1/3/2; position:relative; padding:15px 2px 2px; display:flex; align-items:center; justify-content:center;"><span style="position:absolute; top:2px; left:3px; font-size:0.65rem; color:#00e5ff; font-weight:bold;">Kumbha</span><div style="text-align:center;">${chartData[10].join('<br>')}</div></div>
+                    
+                    <div style="grid-area: 2/2/4/4; display:flex; flex-direction:column; align-items:center; justify-content:center; background: transparent;">
+                        <h3 style="color:#00e5ff; margin:0; text-transform:uppercase; letter-spacing:2px; font-size: 1.1rem;">RASI CHART</h3>
+                        <p style="color:rgba(255,255,255,0.8); font-size:0.85rem; font-weight:bold; margin:5px 0 0; color:#00ffaa;">Sign: ${zodiac}</p>
+                    </div>
+                </div>
+            `;
+
+            resBox.style.justifyContent = "flex-start";
+            resBox.style.alignItems = "stretch";
+            resBox.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="parsed-field" style="margin:0;"><span class="label">Lagnaya</span> <span class="value" style="color:#ffd700;">${lagnaya}</span></div>
+                    <div class="parsed-field" style="margin:0;"><span class="label">Nakshatra</span> <span class="value">${nakshatra}</span></div>
+                </div>
+                
+                ${chartHTML}
+
+                <div style="margin-top:5px; padding:10px; background:rgba(0,229,255,0.1); border-left:3px solid #00e5ff; font-size:0.8rem; color:var(--text-secondary); line-height: 1.4;">
+                    <i class="fas fa-info-circle"></i> This chart is mathematically generated based on your inputs. For precise calculations, use the premium plugin.
+                </div>
+            `;
+        }
+
+        // --- SINHALA UNICODE LOGIC ---
+        var consonants= new Array(); var consonantsUni= new Array(); var vowels= new Array(); var vowelsUni= new Array();
+        var vowelModifiersUni= new Array(); var specialConsonants= new Array(); var specialConsonantsUni= new Array();
+        var specialCharUni= new Array(); var specialChar= new Array();
+        vowelsUni[0]='ඌ'; vowels[0]='oo'; vowelsUni[1]='ඕ'; vowels[1]='o\\)'; vowelsUni[2]='ඕ'; vowels[2]='oe';
+        vowelsUni[3]='ආ'; vowels[3]='aa'; vowelsUni[4]='ආ'; vowels[4]='a\\)'; vowelsUni[5]='ඈ'; vowels[5]='Aaa';
+        vowelsUni[6]='ඈ'; vowels[6]='A\\)'; vowelsUni[7]='ඈ'; vowels[7]='ae'; vowelsUni[8]='ඊ'; vowels[8]='ii';
+        vowelsUni[9]='ඊ'; vowels[9]='i\\)'; vowelsUni[10]='ඊ'; vowels[10]='ie'; vowelsUni[11]='ඊ'; vowels[11]='ee';
+        vowelsUni[12]='ඒ'; vowels[12]='ea'; vowelsUni[13]='ඒ'; vowels[13]='e\\)'; vowelsUni[14]='ඒ'; vowels[14]='ei';
+        vowelsUni[15]='ඌ'; vowels[15]='uu'; vowelsUni[16]='ඌ'; vowels[16]='u\\)'; vowelsUni[17]='ඖ'; vowels[17]='au';
+        vowelsUni[18]='ඇ'; vowels[18]='/\a'; vowelsUni[19]='අ'; vowels[19]='a'; vowelsUni[20]='ඇ'; vowels[20]='A';
+        vowelsUni[21]='ඉ'; vowels[21]='i'; vowelsUni[22]='එ'; vowels[22]='e'; vowelsUni[23]='උ'; vowels[23]='u';
+        vowelsUni[24]='ඔ'; vowels[24]='o'; vowelsUni[25]='ඓ'; vowels[25]='I'; var nVowels=26;
+
+        vowelModifiersUni[0]='ූ'; vowelModifiersUni[1]='ෝ'; vowelModifiersUni[2]='ෝ'; vowelModifiersUni[3]='ා';
+        vowelModifiersUni[4]='ා'; vowelModifiersUni[5]='ෑ'; vowelModifiersUni[6]='ෑ'; vowelModifiersUni[7]='ෑ';
+        vowelModifiersUni[8]='ී'; vowelModifiersUni[9]='ී'; vowelModifiersUni[10]='ී'; vowelModifiersUni[11]='ී';
+        vowelModifiersUni[12]='ේ'; vowelModifiersUni[13]='ේ'; vowelModifiersUni[14]='ේ'; vowelModifiersUni[15]='ූ';
+        vowelModifiersUni[16]='ූ'; vowelModifiersUni[17]='ෞ'; vowelModifiersUni[18]='ැ'; vowelModifiersUni[19]='';
+        vowelModifiersUni[20]='ැ'; vowelModifiersUni[21]='ි'; vowelModifiersUni[22]='ෙ'; vowelModifiersUni[23]='ු';
+        vowelModifiersUni[24]='ො'; vowelModifiersUni[25]='ෛ';
+
+        specialConsonantsUni[0]='ං'; specialConsonants[0]=/\\n/g; specialConsonantsUni[1]='ඃ'; specialConsonants[1]=/\\h/g;
+        specialConsonantsUni[2]='ඞ'; specialConsonants[2]=/\\N/g; specialConsonantsUni[3]='ඍ'; specialConsonants[3]=/\\R/g;
+        specialConsonantsUni[4]='ඎ'; specialConsonants[4]=/R\\\|/g;
+
+        consonantsUni[0]='ඬ'; consonants[0]='nnd'; consonantsUni[1]='ඳ'; consonants[1]='nndh';
+        consonantsUni[2]='ඟ'; consonants[2]='nng'; consonantsUni[3]='ථ'; consonants[3]='Th';
+        consonantsUni[4]='ධ'; consonants[4]='Dh'; consonantsUni[5]='ඝ'; consonants[5]='gh';
+        consonantsUni[6]='ඡ'; consonants[6]='Ch'; consonantsUni[7]='ඵ'; consonants[7]='ph';
+        consonantsUni[8]='භ'; consonants[8]='bh'; consonantsUni[9]='ශ'; consonants[9]='sh';
+        consonantsUni[10]='ෂ'; consonants[10]='Sh'; consonantsUni[11]='ඥ'; consonants[11]='GN';
+        consonantsUni[12]='ඤ'; consonants[12]='KN'; consonantsUni[13]='ළු'; consonants[13]='Lu';
+        consonantsUni[14]='ද'; consonants[14]='dh'; consonantsUni[15]='ච'; consonants[15]='ch';
+        consonantsUni[16]='ඛ'; consonants[16]='kh'; consonantsUni[17]='ත'; consonants[17]='th';
+        consonantsUni[18]='ට'; consonants[18]='t'; consonantsUni[19]='ක'; consonants[19]='k';
+        consonantsUni[20]='ඩ'; consonants[20]='d'; consonantsUni[21]='න'; consonants[21]='n';
+        consonantsUni[22]='ප'; consonants[22]='p'; consonantsUni[23]='බ'; consonants[23]='b';
+        consonantsUni[24]='ම'; consonants[24]='m'; consonantsUni[25]='‍ය'; consonants[25]='\\u005C' + 'y';
+        consonantsUni[26]='‍ය'; consonants[26]='Y'; consonantsUni[27]='ය'; consonants[27]='y';
+        consonantsUni[28]='ජ'; consonants[28]='j'; consonantsUni[29]='ල'; consonants[29]='l';
+        consonantsUni[30]='ව'; consonants[30]='v'; consonantsUni[31]='ව'; consonants[31]='w';
+        consonantsUni[32]='ස'; consonants[32]='s'; consonantsUni[33]='හ'; consonants[33]='h';
+        consonantsUni[34]='ණ'; consonants[34]='N'; consonantsUni[35]='ළ'; consonants[35]='L';
+        consonantsUni[36]='ඛ'; consonants[36]='K'; consonantsUni[37]='ඝ'; consonants[37]='G';
+        consonantsUni[38]='ඨ'; consonants[38]='T'; consonantsUni[39]='ඪ'; consonants[39]='D';
+        consonantsUni[40]='ඵ'; consonants[40]='P'; consonantsUni[41]='භ'; consonants[41]='B';
+        consonantsUni[42]='ශ'; consonants[42]='S'; consonantsUni[43]='ෂ'; consonants[43]='sh';
+        consonantsUni[44]='ළ'; consonants[44]='L'; consonantsUni[45]='ච'; consonants[45]='c';
+        consonantsUni[46]='ග'; consonants[46]='g'; consonantsUni[47]='ර'; consonants[47]='r';
+
+        function startTextSinhala() {
+            var s, r, v;
+            var text = document.getElementById("singlishInput").value;
+            for (var i=0; i<specialConsonants.length; i++) text = text.replace(specialConsonants[i], specialConsonantsUni[i]);
+            for (var i=0; i<specialCharUni.length; i++){
+                for (var j=0;j<consonants.length;j++){
+                    s = consonants[j] + specialChar[i]; v = consonantsUni[j] + specialCharUni[i];
+                    r = new RegExp(s, "g"); text = text.replace(r, v);
+                }
+            }
+            for (var i=0; i<consonants.length; i++){
+                for (var j=0;j<nVowels;j++){ 
+                    s = consonants[i] + "r" + vowels[j]; v = consonantsUni[i] + "්‍ර" + vowelModifiersUni[j];
+                    r = new RegExp(s, "g"); text = text.replace(r, v);
+                    s = consonants[i] + vowels[j]; v = consonantsUni[i] + vowelModifiersUni[j];
+                    r = new RegExp(s, "g"); text = text.replace(r, v);
+                }
+            }
+            for (var i=0; i<consonants.length; i++){
+                r = new RegExp(consonants[i], "g");
+                text = text.replace(r, consonantsUni[i]+"්");
+            }
+            for (var i=0; i<nVowels; i++){
+                r = new RegExp(vowels[i], "g");
+                text = text.replace(r, vowelsUni[i]);
+            }
+            document.getElementById("sinhalaOutput").value = text;
+            
+            clearTimeout(embeddedTranslateTimeout);
+            embeddedTranslateTimeout = setTimeout(translateTextEmbedded, 600);
+        }
+
+        let embeddedTranslateTimeout;
+
+        function translateTextEmbedded() {
+            const sinhalaText = document.getElementById("sinhalaOutput").value;
+            const lang = document.getElementById("embedded_lang_select").value;
+            const transBox = document.getElementById("embeddedTranslatedOutput");
+
+            if(!sinhalaText.trim()) { transBox.value = ""; return; }
+            transBox.value = "Translating...";
+            fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=si&tl=${lang}&dt=t&q=${encodeURIComponent(sinhalaText)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data && data[0] && data[0][0] && data[0][0][0]) {
+                        let result = '';
+                        for(let i=0; i<data[0].length; i++) if(data[0][i][0]) result += data[0][i][0];
+                        transBox.value = result;
+                    }
+                })
+                .catch(err => { transBox.value = "Translation Error! Check Internet."; });
+        }
+
+        function copyEmbeddedTrans() {
+            var copyText = document.getElementById("embeddedTranslatedOutput");
+            if(copyText.value === '' || copyText.value.includes('Translating')) return;
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Translation copied to clipboard!");
+        }
+
+        function copySinhala() {
+            var copyText = document.getElementById("sinhalaOutput");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Sinhala Unicode copied to clipboard!");
+        }
+
+        function downloadSinhalaTool() {
+            var link = document.createElement('a');
+            link.href = 'Sinhala_Floating_Widget.exe';
+            link.download = 'Sinhala_Floating_Widget.exe';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function launchSinhalaPopup() {
+            window.open('sinhala-tool.html', 'SinhalaToolPopup', 'width=450,height=125,top=100,left=100,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no');
+        }
+
+        function initIosPicker(id, options, defaultIndex) {
+            let html = '<div class="ios-picker-item empty"></div>';
+            options.forEach(opt => { html += `<div class="ios-picker-item" data-val="${opt.value}">${opt.label}</div>`; });
+            html += '<div class="ios-picker-item empty"></div>';
+            const col = document.getElementById(id);
+            if(!col) return;
+            col.innerHTML = html;
+            col.addEventListener('scroll', () => {
+                const items = col.querySelectorAll('.ios-picker-item:not(.empty)');
+                let selectedIdx = Math.round(col.scrollTop / 50);
+                if(selectedIdx < 0) selectedIdx = 0;
+                if(selectedIdx >= items.length) selectedIdx = items.length - 1;
+                items.forEach((item, i) => {
+                    if(i === selectedIdx) {
+                        item.style.opacity = '1'; item.style.transform = 'scale(1.1)'; item.style.color = '#00e5ff'; item.style.fontWeight = 'bold';
+                    } else {
+                        item.style.opacity = '0.5'; item.style.transform = 'scale(1)'; item.style.color = '#fff'; item.style.fontWeight = 'normal';
+                    }
+                });
+            });
+            setTimeout(() => { col.scrollTop = defaultIndex * 50; col.dispatchEvent(new Event('scroll')); }, 100);
+        }
+
+        function getPickerValue(id) {
+            const col = document.getElementById(id);
+            if(!col) return '';
+            let selectedIdx = Math.round(col.scrollTop / 50);
+            const items = col.querySelectorAll('.ios-picker-item:not(.empty)');
+            if(selectedIdx < 0) selectedIdx = 0;
+            if(selectedIdx >= items.length) selectedIdx = items.length - 1;
+            return items[selectedIdx]?.getAttribute('data-val') || '';
+        }
+
+        function initAstroPickers() {
+            const years = []; for(let i=1950; i<=2030; i++) years.push({value: i, label: i});
+            const months = []; for(let i=1; i<=12; i++) months.push({value: i.toString().padStart(2,'0'), label: i.toString().padStart(2,'0')});
+            const days = []; for(let i=1; i<=31; i++) days.push({value: i.toString().padStart(2,'0'), label: i.toString().padStart(2,'0')});
+            const hours = []; for(let i=1; i<=12; i++) hours.push({value: i.toString().padStart(2,'0'), label: i.toString().padStart(2,'0')});
+            const mins = []; for(let i=0; i<=59; i++) mins.push({value: i.toString().padStart(2,'0'), label: i.toString().padStart(2,'0')});
+            const ampm = [{value: 'AM', label: 'AM'}, {value: 'PM', label: 'PM'}];
+            initIosPicker('col-year', years, 45); // 1995
+            initIosPicker('col-month', months, 0); // Jan
+            initIosPicker('col-day', days, 0); // 1
+            initIosPicker('col-hour', hours, 7); // 08
+            initIosPicker('col-minute', mins, 30); // 30
+            initIosPicker('col-ampm', ampm, 0); // AM
+        }
+        initAstroPickers();
+    </script>
+</body>
+</html>

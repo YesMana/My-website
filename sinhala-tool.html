@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinhala Bar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: rgba(18, 18, 18, 0.95);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-app-region: drag;
+        }
+        .toolbar {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+            border: 1px solid #00e5ff;
+            box-shadow: 0 4px 20px rgba(0,229,255,0.2);
+            -webkit-app-region: no-drag;
+            gap: 10px;
+        }
+        .drag-handle {
+            -webkit-app-region: drag;
+            cursor: grab;
+            color: #555;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+        input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #444;
+            color: #00e5ff;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00e5ff;
+        }
+        select {
+            background: #111;
+            color: #00e5ff;
+            border: 1px solid #444;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .btn {
+            background: #00e5ff;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .btn:hover { background: #00c4cc; transform: scale(1.05); }
+        .btn:active { transform: scale(0.95); }
+        .row {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .copied-toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #00ffaa;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="toolbar">
+    <div class="drag-handle" title="Drag Window"><i class="fas fa-grip-vertical"></i></div>
+    
+    <div class="input-wrapper">
+        <input type="text" id="singlish_box" placeholder="Singlish..." oninput="startText()" autocomplete="off">
+        
+        <div class="row">
+            <input type="text" id="sinhala_box" placeholder="සිංහල..." readonly style="color: #fff; font-size: 1.3rem; flex: 1;">
+            <button class="btn" onclick="copyText('sinhala_box')" title="Copy Sinhala"><i class="fas fa-copy"></i></button>
+        </div>
+        
+        <div class="row">
+            <select id="lang_select" onchange="translateText()" title="Target Language" style="max-width: 100px; text-overflow: ellipsis;">
+                <option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="am">Amharic</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="ny">Chichewa</option><option value="zh-CN">Chinese (Simp)</option><option value="zh-TW">Chinese (Trad)</option><option value="co">Corsican</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="en" selected>English</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="fy">Frisian</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="ht">Haitian Creole</option><option value="ha">Hausa</option><option value="haw">Hawaiian</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="ig">Igbo</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="kk">Kazakh</option><option value="km">Khmer</option><option value="ko">Korean</option><option value="ku">Kurdish</option><option value="ky">Kyrgyz</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="lb">Luxembourgish</option><option value="mk">Macedonian</option><option value="mg">Malagasy</option><option value="ms">Malay</option><option value="ml">Malayalam</option><option value="mt">Maltese</option><option value="mi">Maori</option><option value="mr">Marathi</option><option value="mn">Mongolian</option><option value="my">Myanmar</option><option value="ne">Nepali</option><option value="no">Norwegian</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="pa">Punjabi</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sm">Samoan</option><option value="gd">Scots Gaelic</option><option value="sr">Serbian</option><option value="st">Sesotho</option><option value="sn">Shona</option><option value="sd">Sindhi</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="so">Somali</option><option value="es">Spanish</option><option value="su">Sundanese</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="tg">Tajik</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="uz">Uzbek</option><option value="vi">Vietnamese</option><option value="cy">Welsh</option><option value="xh">Xhosa</option><option value="yi">Yiddish</option><option value="yo">Yoruba</option><option value="zu">Zulu</option>
+            </select>
+            <input type="text" id="translated_box" placeholder="Translation..." readonly style="color: #00ffaa; font-size: 1.1rem; flex: 1; border-color: #00ffaa;">
+            <button class="btn" onclick="copyText('translated_box')" title="Copy Translation"><i class="fas fa-copy"></i></button>
+        </div>
+        
+        <div style="font-size: 0.7rem; color: #777; text-align: center;">* Translation requires an active internet connection</div>
+        <div id="toast" class="copied-toast">Copied!</div>
+    </div>
+    
+    <button class="btn" onclick="clearText()" style="background: #333; color: #fff; height: 100%; width: 30px;" title="Clear All"><i class="fas fa-eraser"></i></button>
+</div>
+
+<script>
+// Phonetic Logic
+var text;
+var consonants= new Array(); var consonantsUni= new Array(); var vowels= new Array(); var vowelsUni= new Array();
+var vowelModifiersUni= new Array(); var specialConsonants= new Array(); var specialConsonantsUni= new Array();
+var specialCharUni= new Array(); var specialChar= new Array();
+
+vowelsUni[0]='ඌ'; vowels[0]='oo'; vowelsUni[1]='ඕ'; vowels[1]='o\\)'; vowelsUni[2]='ඕ'; vowels[2]='oe';
+vowelsUni[3]='ආ'; vowels[3]='aa'; vowelsUni[4]='ආ'; vowels[4]='a\\)'; vowelsUni[5]='ඈ'; vowels[5]='Aaa';
+vowelsUni[6]='ඈ'; vowels[6]='A\\)'; vowelsUni[7]='ඈ'; vowels[7]='ae'; vowelsUni[8]='ඊ'; vowels[8]='ii';
+vowelsUni[9]='ඊ'; vowels[9]='i\\)'; vowelsUni[10]='ඊ'; vowels[10]='ie'; vowelsUni[11]='ඊ'; vowels[11]='ee';
+vowelsUni[12]='ඒ'; vowels[12]='ea'; vowelsUni[13]='ඒ'; vowels[13]='e\\)'; vowelsUni[14]='ඒ'; vowels[14]='ei';
+vowelsUni[15]='ඌ'; vowels[15]='uu'; vowelsUni[16]='ඌ'; vowels[16]='u\\)'; vowelsUni[17]='ඖ'; vowels[17]='au';
+vowelsUni[18]='ඇ'; vowels[18]='/\a'; vowelsUni[19]='අ'; vowels[19]='a'; vowelsUni[20]='ඇ'; vowels[20]='A';
+vowelsUni[21]='ඉ'; vowels[21]='i'; vowelsUni[22]='එ'; vowels[22]='e'; vowelsUni[23]='උ'; vowels[23]='u';
+vowelsUni[24]='ඔ'; vowels[24]='o'; vowelsUni[25]='ඓ'; vowels[25]='I'; var nVowels=26;
+
+vowelModifiersUni[0]='ූ'; vowelModifiersUni[1]='ෝ'; vowelModifiersUni[2]='ෝ'; vowelModifiersUni[3]='ා';
+vowelModifiersUni[4]='ා'; vowelModifiersUni[5]='ෑ'; vowelModifiersUni[6]='ෑ'; vowelModifiersUni[7]='ෑ';
+vowelModifiersUni[8]='ී'; vowelModifiersUni[9]='ී'; vowelModifiersUni[10]='ී'; vowelModifiersUni[11]='ී';
+vowelModifiersUni[12]='ේ'; vowelModifiersUni[13]='ේ'; vowelModifiersUni[14]='ේ'; vowelModifiersUni[15]='ූ';
+vowelModifiersUni[16]='ූ'; vowelModifiersUni[17]='ෞ'; vowelModifiersUni[18]='ැ'; vowelModifiersUni[19]='';
+vowelModifiersUni[20]='ැ'; vowelModifiersUni[21]='ි'; vowelModifiersUni[22]='ෙ'; vowelModifiersUni[23]='ු';
+vowelModifiersUni[24]='ො'; vowelModifiersUni[25]='ෛ';
+
+specialConsonantsUni[0]='ං'; specialConsonants[0]=/\\n/g; specialConsonantsUni[1]='ඃ'; specialConsonants[1]=/\\h/g;
+specialConsonantsUni[2]='ඞ'; specialConsonants[2]=/\\N/g; specialConsonantsUni[3]='ඍ'; specialConsonants[3]=/\\R/g;
+specialConsonantsUni[4]='ඎ'; specialConsonants[4]=/R\\\|/g;
+
+consonantsUni[0]='ඬ'; consonants[0]='nnd'; consonantsUni[1]='ඳ'; consonants[1]='nndh';
+consonantsUni[2]='ඟ'; consonants[2]='nng'; consonantsUni[3]='ථ'; consonants[3]='Th';
+consonantsUni[4]='ධ'; consonants[4]='Dh'; consonantsUni[5]='ඝ'; consonants[5]='gh';
+consonantsUni[6]='ඡ'; consonants[6]='Ch'; consonantsUni[7]='ඵ'; consonants[7]='ph';
+consonantsUni[8]='භ'; consonants[8]='bh'; consonantsUni[9]='ශ'; consonants[9]='sh';
+consonantsUni[10]='ෂ'; consonants[10]='Sh'; consonantsUni[11]='ඥ'; consonants[11]='GN';
+consonantsUni[12]='ඤ'; consonants[12]='KN'; consonantsUni[13]='ළු'; consonants[13]='Lu';
+consonantsUni[14]='ද'; consonants[14]='dh'; consonantsUni[15]='ච'; consonants[15]='ch';
+consonantsUni[16]='ඛ'; consonants[16]='kh'; consonantsUni[17]='ත'; consonants[17]='th';
+consonantsUni[18]='ට'; consonants[18]='t'; consonantsUni[19]='ක'; consonants[19]='k';
+consonantsUni[20]='ඩ'; consonants[20]='d'; consonantsUni[21]='න'; consonants[21]='n';
+consonantsUni[22]='ප'; consonants[22]='p'; consonantsUni[23]='බ'; consonants[23]='b';
+consonantsUni[24]='ම'; consonants[24]='m'; consonantsUni[25]='‍ය'; consonants[25]='\\u005C' + 'y';
+consonantsUni[26]='‍ය'; consonants[26]='Y'; consonantsUni[27]='ය'; consonants[27]='y';
+consonantsUni[28]='ජ'; consonants[28]='j'; consonantsUni[29]='ල'; consonants[29]='l';
+consonantsUni[30]='ව'; consonants[30]='v'; consonantsUni[31]='ව'; consonants[31]='w';
+consonantsUni[32]='ස'; consonants[32]='s'; consonantsUni[33]='හ'; consonants[33]='h';
+consonantsUni[34]='ණ'; consonants[34]='N'; consonantsUni[35]='ළ'; consonants[35]='L';
+consonantsUni[36]='ඛ'; consonants[36]='K'; consonantsUni[37]='ඝ'; consonants[37]='G';
+consonantsUni[38]='ඨ'; consonants[38]='T'; consonantsUni[39]='ඪ'; consonants[39]='D';
+consonantsUni[40]='ඵ'; consonants[40]='P'; consonantsUni[41]='භ'; consonants[41]='B';
+consonantsUni[42]='ශ'; consonants[42]='S'; consonantsUni[43]='ෂ'; consonants[43]='sh';
+consonantsUni[44]='ළ'; consonants[44]='L'; consonantsUni[45]='ච'; consonants[45]='c';
+consonantsUni[46]='ග'; consonants[46]='g'; consonantsUni[47]='ර'; consonants[47]='r';
+
+let translateTimeout;
+
+function startText() {
+    var s, r, v;
+    text = document.getElementById("singlish_box").value;
+    for (var i=0; i<specialConsonants.length; i++) text = text.replace(specialConsonants[i], specialConsonantsUni[i]);
+    for (var i=0; i<specialCharUni.length; i++){
+        for (var j=0;j<consonants.length;j++){
+            s = consonants[j] + specialChar[i]; v = consonantsUni[j] + specialCharUni[i];
+            r = new RegExp(s, "g"); text = text.replace(r, v);
+        }
+    }
+    for (var i=0; i<consonants.length; i++){
+        for (var j=0;j<nVowels;j++){ 
+            s = consonants[i] + "r" + vowels[j]; v = consonantsUni[i] + "්‍ර" + vowelModifiersUni[j];
+            r = new RegExp(s, "g"); text = text.replace(r, v);
+            s = consonants[i] + vowels[j]; v = consonantsUni[i] + vowelModifiersUni[j];
+            r = new RegExp(s, "g"); text = text.replace(r, v);
+        }
+    }
+    for (var i=0; i<consonants.length; i++){
+        r = new RegExp(consonants[i], "g");
+        text = text.replace(r, consonantsUni[i]+"්");
+    }
+    for (var i=0; i<nVowels; i++){
+        r = new RegExp(vowels[i], "g");
+        text = text.replace(r, vowelsUni[i]);
+    }
+    document.getElementById("sinhala_box").value = text;
+
+    // Trigger translation with debounce
+    clearTimeout(translateTimeout);
+    translateTimeout = setTimeout(translateText, 600);
+}
+
+function translateText() {
+    const sinhalaText = document.getElementById("sinhala_box").value;
+    const lang = document.getElementById("lang_select").value;
+    const transBox = document.getElementById("translated_box");
+
+    if(!sinhalaText.trim()) {
+        transBox.value = "";
+        return;
+    }
+
+    transBox.value = "Translating...";
+    
+    fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=si&tl=${lang}&dt=t&q=${encodeURIComponent(sinhalaText)}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data && data[0] && data[0][0] && data[0][0][0]) {
+                // Combine multi-sentence translations
+                let result = '';
+                for(let i=0; i<data[0].length; i++) {
+                    if(data[0][i][0]) result += data[0][i][0];
+                }
+                transBox.value = result;
+            }
+        })
+        .catch(err => {
+            transBox.value = "Translation Error! Check Internet.";
+        });
+}
+
+function copyText(id) {
+    var copyBox = document.getElementById(id);
+    if(copyBox.value === '' || copyBox.value.includes('Translating')) return;
+    copyBox.select();
+    navigator.clipboard.writeText(copyBox.value);
+    
+    var toast = document.getElementById("toast");
+    toast.style.opacity = "1";
+    setTimeout(() => { toast.style.opacity = "0"; }, 1500);
+}
+
+function clearText() {
+    document.getElementById("singlish_box").value = '';
+    document.getElementById("sinhala_box").value = '';
+    document.getElementById("translated_box").value = '';
+    document.getElementById("singlish_box").focus();
+}
+
+window.onload = function() {
+    document.getElementById("singlish_box").focus();
+};
+
+document.getElementById('singlish_box').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        copyText('sinhala_box');
+    }
+});
+</script>
+</body>
+</html>

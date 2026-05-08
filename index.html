@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilshan Manujaya | Tech & Cyber Security Solutions</title>
+    <meta name="description" content="Dilshan Manujaya offers premium social media solutions, cutting-edge technology services, and robust cyber security solutions.">
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        /* Hide Google Translate Top Bar */
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <nav class="navbar notranslate" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-d">d</span><span class="logo-m">m</span>
+                <span class="logo-text">Dilshan Manujaya</span>
+            </div>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 10px;">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#services" class="nav-link">Services</a>
+                
+                <select id="siteLangSelect" onchange="changeLanguage(this.value)" style="background: rgba(0,229,255,0.1); color: white; border: 1px solid rgba(0,229,255,0.3); padding: 5px 10px; border-radius: 8px; cursor: pointer; outline: none; font-family: var(--font-body); font-size: 0.9rem;">
+                    <option value="en" style="color: #000;">English</option>
+                    <option value="si" style="color: #000;">සිංහල</option>
+                    <option value="ta" style="color: #000;">தமிழ்</option>
+                </select>
+
+                <div id="themeToggle" style="cursor: pointer; margin-left: 10px; font-size: 1.2rem; color: var(--primary-color); display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2); transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary-color)'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,229,255,0.1)'; this.style.color='var(--primary-color)';">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </div>
+
+                <a href="#contact" class="nav-link btn-primary" style="margin-left: 10px;">Contact Me</a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <header id="home" class="hero notranslate">
+        <div class="hero-content">
+            <h2 class="subtitle">Welcome to the future of digital presence</h2>
+            <h1 class="title">Hi, I'm <span class="highlight">Dilshan Manujaya</span></h1>
+            <p class="description">
+                Empowering businesses with cutting-edge <span class="highlight">Social Media Solutions</span>, 
+                innovative <span class="highlight">Tech Services</span>, and robust <span class="highlight">Cyber Security</span>.
+            </p>
+            <div class="hero-buttons">
+                <a href="#services" class="btn btn-primary">Explore Services</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+            </div>
+        </div>
+        <div class="hero-image-container">
+            <div class="glass-card profile-card">
+                <!-- User to replace this src with their actual uploaded profile photo -->
+                <img src="images/profile.jpg" alt="Dilshan Manujaya" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Dilshan+Manujaya&size=400&background=0d1117&color=00e5ff'">
+                <div class="card-info">
+                    <h3>Dilshan Manujaya</h3>
+                    <p>Tech & Security Expert</p>
+                </div>
+            </div>
+            <div class="floating-badge badge-1">
+                <i class="fas fa-shield-alt"></i>
+                <span>Cyber Security</span>
+            </div>
+            <div class="floating-badge badge-2">
+                <i class="fas fa-share-nodes"></i>
+                <span>Social Media</span>
+            </div>
+            <div class="floating-badge badge-3">
+                <i class="fas fa-code"></i>
+                <span>Tech Solutions</span>
+            </div>
+        </div>
+    </header>
+
+    <section id="services" class="services-section notranslate">
+        <div class="section-header">
+            <h2>Premium <span class="highlight">Services</span></h2>
+            <p>Comprehensive digital solutions tailored for your growth and security.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card" data-tilt style="display: flex; flex-direction: column;">
+                <div class="service-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Page/Channel Growth & Security</h3>
+                <p style="flex-grow: 1;">Grow your Facebook pages and YouTube channels while keeping them 100% secure from hackers.</p>
+                <button class="btn btn-primary" onclick="openServiceModal('security')" style="margin-top: 20px; width: 100%;">Request Service</button>
+            </div>
+            
+            <div class="service-card" data-tilt style="display: flex; flex-direction: column;">
+                <div class="service-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3>Boosting & Ad Campaigns</h3>
+                <p style="flex-grow: 1;">Highly targeted advertising campaigns to maximize your reach, generate leads, and boost sales.</p>
+                <button class="btn btn-primary" onclick="openServiceModal('boosting')" style="margin-top: 20px; width: 100%;">Start Campaign</button>
+            </div>
+
+            <div class="service-card" data-tilt style="display: flex; flex-direction: column;">
+                <div class="service-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3>Web & System Development</h3>
+                <p style="flex-grow: 1;">Custom-built premium websites, dynamic web applications, and robust system development solutions.</p>
+                <button class="btn btn-primary" onclick="window.location.href='website-service.html'" style="margin-top: 20px; width: 100%;">Explore Services <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools-hub" class="notranslate" style="padding: 60px 20px; background: linear-gradient(to bottom, rgba(5,8,16,1), rgba(0,229,255,0.05)); text-align: center;">
+        <div style="max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.02); padding: 50px; border-radius: 20px; border: 1px solid rgba(0,229,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: #00e5ff; filter: blur(80px); opacity: 0.3; border-radius: 50%;"></div>
+            
+            <i class="fas fa-boxes fa-3x" style="color: #00e5ff; margin-bottom: 20px;"></i>
+            <h2 style="color: var(--primary-color); font-family: var(--font-heading); margin-bottom: 15px; font-size: 2.5rem;">Developer Tools & Plugins</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6;">Explore my custom-built productivity tools, web plugins, and mini-applications. Test them live in the interactive workspace and download them for your own projects!</p>
+            
+            <button class="btn btn-primary" onclick="window.location.href='tools.html'" style="padding: 15px 40px; font-size: 1.2rem; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,229,255,0.3);">
+                Enter Tools Workspace <i class="fas fa-rocket"></i>
+            </button>
+        </div>
+    </section>
+
+    <section id="about" class="about-section notranslate">
+        <div class="about-container glass-panel">
+            <div class="about-text">
+                <h2>About <span class="highlight">Me</span></h2>
+                <p>With extensive experience in the digital landscape, I've dedicated myself to providing end-to-end solutions that bridge the gap between technology, marketing, and security.</p>
+                <p>My mission is to help businesses not only grow their online presence but do so securely and sustainably. Whether you need a viral social media campaign, a robust web application, or military-grade cyber security consulting, I deliver excellence.</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <h4 class="counter" data-target="150">0</h4><span>+</span>
+                        <p>Projects Completed</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4 class="counter" data-target="100">0</h4><span>%</span>
+                        <p>Client Satisfaction</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4 class="counter" data-target="24">0</h4><span>/7</span>
+                        <p>Support</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="logo-showcase">
+                    <!-- Placeholder for the custom logo the user uploaded -->
+                    <img src="images/logo.png" alt="DM Logo" class="dm-logo" onerror="this.style.display='none'">
+                    <div class="logo-fallback" id="logo-fallback">
+                        <div class="logo-d-large">d</div>
+                        <div class="play-btn"></div>
+                        <div class="logo-m-large">m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews" class="services-section notranslate" style="padding-top: 40px;">
+        <div class="section-header">
+            <h2>Client <span class="highlight">Reviews</span></h2>
+            <p>What people say about my social media & security solutions.</p>
+        </div>
+        <div class="swiper reviews-swiper" style="padding-bottom: 50px;">
+            <div class="swiper-wrapper" id="publicReviewsContainer">
+                <!-- Reviews will be loaded dynamically via JS -->
+                <div style="text-align: center; width: 100%;">
+                    <p>Loading reviews...</p>
+                </div>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- Add Navigation -->
+            <div class="swiper-button-next" style="color: var(--primary-color);"></div>
+            <div class="swiper-button-prev" style="color: var(--primary-color);"></div>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="admin.html" class="btn btn-secondary" style="font-size: 0.8rem; padding: 5px 15px;"><i class="fas fa-lock"></i> Admin Panel</a>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="section-header notranslate">
+            <h2>Get In <span class="highlight">Touch</span></h2>
+            <p>Ready to secure and scale your business? Let's talk.</p>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info glass-card notranslate">
+                <h3>Contact Information</h3>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p>hello@dilshanmanujaya.com</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>+94 7X XXX XXXX</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Location</h4>
+                        <p>Sri Lanka</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="https://wa.me/94700000000" target="_blank" class="social-icon" style="background: #25D366; color: white;"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/DilManujaya" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    <a href="#" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center; border-radius: 12px; overflow: hidden; display: flex; justify-content: center; background: #fff; padding: 10px; border: 2px solid rgba(0, 229, 255, 0.2);">
+                    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FDilManujaya&tabs=&width=340&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="340" height="130" style="border:none;overflow:hidden; max-width: 100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                </div>
+            </div>
+            <form class="contact-form glass-card" id="contactForm">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <select id="service" required>
+                        <option value="" disabled selected>Select a Service</option>
+                        <option value="social">Social Media Solutions</option>
+                        <option value="tech">Tech Solutions</option>
+                        <option value="security">Cyber Security</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary submit-btn">
+                    <span>Send Message</span> <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="notranslate">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-d">d</span><span class="logo-m">m</span>
+                <span class="logo-text">Dilshan Manujaya</span>
+            </div>
+            <p>&copy; 2026 Dilshan Manujaya. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Image Zoom Modal (Lightbox) -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- Service Modal -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content glass-card" style="max-width: 600px; padding: 40px; text-align: left; position: relative;">
+            <span class="modal-close" onclick="closeServiceModal()" style="top: 15px; right: 20px;">&times;</span>
+            <div id="modalFlowContainer">
+                <!-- Content injected dynamically via script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/94700000000" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-tooltip">Chat with me</span>
+    </a>
+
+    <!-- Google Translate Script -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,si,ta', autoDisplay: false}, 'google_translate_element');
+        }
+        
+        function changeLanguage(lang) {
+            if (lang === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.${location.hostname}; path=/;`;
+            } else {
+                document.cookie = `googtrans=/en/${lang}; path=/;`;
+                document.cookie = `googtrans=/en/${lang}; domain=.${location.hostname}; path=/;`;
+            }
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
+            if (match && match[1]) {
+                const langSelect = document.getElementById('siteLangSelect');
+                if(langSelect) langSelect.value = match[1];
+            }
+
+            // Theme Toggle Logic
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const body = document.body;
+            
+            if (localStorage.getItem('theme') === 'light') {
+                body.classList.add('light-mode');
+                if(themeIcon) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+            }
+
+            if (themeToggle && themeIcon) {
+                themeToggle.addEventListener('click', () => {
+                    body.classList.toggle('light-mode');
+                    if (body.classList.contains('light-mode')) {
+                        localStorage.setItem('theme', 'light');
+                        themeIcon.classList.remove('fa-sun');
+                        themeIcon.classList.add('fa-moon');
+                    } else {
+                        localStorage.setItem('theme', 'dark');
+                        themeIcon.classList.remove('fa-moon');
+                        themeIcon.classList.add('fa-sun');
+                    }
+                });
+            }
+        });
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Particles.js and Swiper.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="script.js?v=3"></script>
+</body>
+</html>

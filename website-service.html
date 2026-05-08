@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Website Services | Dilshan Manujaya</title>
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #050810; overflow-x: hidden; }
+        .hero-website { padding: 120px 20px 60px; text-align: center; position: relative; }
+        .hero-website h1 { font-size: 3.5rem; text-transform: uppercase; letter-spacing: 2px; background: linear-gradient(135deg, #00e5ff, #0077ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-heading); margin-bottom: 20px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 20px 10%; margin-bottom: 40px; }
+        
+        /* Game Area */
+        .workspace-game { margin: 50px auto; max-width: 1000px; padding: 40px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(0,229,255,0.2); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .game-layout { display: flex; gap: 40px; margin-top: 30px; flex-wrap: wrap; }
+        .toolbox { flex: 1; min-width: 250px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 20px; border: 1px dashed #00e5ff; }
+        .canvas-area { flex: 2; min-width: 300px; background: rgba(0,0,0,0.8); border-radius: 10px; padding: 20px; min-height: 400px; display: flex; flex-direction: column; gap: 15px; position: relative; overflow: hidden; }
+        
+        .drag-item { background: linear-gradient(90deg, rgba(0,229,255,0.1), transparent); border: 1px solid #00e5ff; padding: 15px; border-radius: 8px; cursor: pointer; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; transition: 0.2s; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .drag-item:active { transform: scale(0.95); opacity: 0.8; }
+        .drag-item.dragging { opacity: 0.5; }
+        .drag-item.selected-glow { box-shadow: 0 0 15px #00e5ff; border-color: #ffffff; transform: scale(1.02); }
+        .drag-item * { pointer-events: none; }
+
+        .drop-zone { background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; height: 80px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); transition: 0.3s; font-size: 0.9rem; letter-spacing: 1px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .drop-zone.dragover { background: rgba(0,229,255,0.1); border-color: #00e5ff; color: #00e5ff; transform: scale(1.02); }
+        .drop-zone.filled { border: 1px solid #00e5ff; background: rgba(0,229,255,0.05); color: #fff; justify-content: flex-start; padding-left: 20px; font-size: 1rem; box-shadow: inset 0 0 10px rgba(0,229,255,0.1); }
+        .drop-zone * { pointer-events: none; }
+
+        .success-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 16, 0.95); border-radius: 10px; align-items: center; justify-content: center; flex-direction: column; z-index: 10; animation: fadeIn 0.5s ease; backdrop-filter: blur(5px); }
+
+        @media (max-width: 768px) {
+            .hero-website h1 { font-size: 2.5rem; }
+            .workspace-game { margin: 20px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='/'" style="cursor:pointer;">
+                <span class="logo-d">d</span><span class="logo-m">m</span>
+                <span class="logo-text">Dilshan Manujaya</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link btn-primary" style="padding: 10px 20px;"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-website">
+        <h1>Masterpiece Websites</h1>
+        <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6;">We don't just build websites; we craft high-performance digital experiences. 100% customizable, incredibly fast, and uniquely tailored to your brand.</p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="service-card glass-card" style="text-align: center;">
+            <i class="fas fa-paint-brush fa-3x" style="color: #00e5ff; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 15px; color: white;">Fully Customizable</h3>
+            <p style="color: var(--text-secondary);">Your brand is unique. Every pixel is tailored to match your vision, from custom color themes to complex interactive animations.</p>
+        </div>
+        <div class="service-card glass-card" style="text-align: center;">
+            <i class="fas fa-mobile-alt fa-3x" style="color: #00b4d8; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 15px; color: white;">Responsive & Fast</h3>
+            <p style="color: var(--text-secondary);">Flawless performance on mobile, tablet, and desktop. We optimize everything so your site loads instantly.</p>
+        </div>
+        <div class="service-card glass-card" style="text-align: center;">
+            <i class="fas fa-search-dollar fa-3x" style="color: #03045e; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 15px; color: white;">SEO & Conversion</h3>
+            <p style="color: var(--text-secondary);">Built to rank highly on Google and designed with psychological triggers to convert visitors into loyal customers.</p>
+        </div>
+    </div>
+
+    <div class="workspace-game">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #00e5ff; font-family: var(--font-heading);">Mini Workspace Challenge</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 10px auto 20px;">Try building your own layout! <b>Drag & Drop</b> OR <b>Click to select and place</b> components from the toolbox into the correct slots in the canvas.</p>
+            <button class="btn btn-secondary" onclick="requestWebsite()" style="padding: 10px 25px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
+                Skip Challenge & Submit Inquiry <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <div class="game-layout">
+            <div class="toolbox" id="toolbox">
+                <h4 style="color: white; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;"><i class="fas fa-tools"></i> Components Toolbox</h4>
+                
+                <div class="drag-item" draggable="true" data-type="header">
+                    <i class="fas fa-heading"></i> Navigation Header
+                </div>
+                <div class="drag-item" draggable="true" data-type="hero">
+                    <i class="fas fa-image"></i> Hero Banner Section
+                </div>
+                <div class="drag-item" draggable="true" data-type="content">
+                    <i class="fas fa-align-left"></i> Main Info Content
+                </div>
+                <div class="drag-item" draggable="true" data-type="footer">
+                    <i class="fas fa-shoe-prints"></i> Website Footer
+                </div>
+            </div>
+            
+            <div class="canvas-area" id="canvas-area">
+                <div class="success-overlay" id="successOverlay">
+                    <i class="fas fa-trophy fa-4x" style="color: gold; margin-bottom: 20px;"></i>
+                    <h2 style="color: #00e5ff; margin-bottom: 15px; font-family: var(--font-heading);">Layout Complete!</h2>
+                    <p style="color: var(--text-secondary); text-align: center; margin-bottom: 30px; max-width: 400px;">You've successfully structured a website. Now let the experts add the magic, writing the code, and ensuring maximum security.</p>
+                    <button class="btn btn-primary" onclick="requestWebsite()" style="padding: 15px 30px; font-size: 1.1rem;">Request Custom Website <i class="fas fa-rocket" style="margin-left: 10px;"></i></button>
+                </div>
+
+                <div class="drop-zone" data-target="header"><i class="fas fa-plus" style="margin-right:10px;"></i> Drop Navigation Header Here</div>
+                <div class="drop-zone" data-target="hero"><i class="fas fa-plus" style="margin-right:10px;"></i> Drop Hero Banner Here</div>
+                <div class="drop-zone" data-target="content"><i class="fas fa-plus" style="margin-right:10px;"></i> Drop Main Info Content Here</div>
+                <div class="drop-zone" data-target="footer"><i class="fas fa-plus" style="margin-right:10px;"></i> Drop Footer Here</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Drag and Drop & Click Logic
+        const draggables = document.querySelectorAll('.drag-item');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        let completed = 0;
+        let selectedDraggable = null;
+
+        draggables.forEach(draggable => {
+            // Drag events
+            draggable.addEventListener('dragstart', (e) => {
+                draggable.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', draggable.getAttribute('data-type'));
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+
+            // Click event for mobile/fallback support
+            const handleSelect = (e) => {
+                if(selectedDraggable) selectedDraggable.classList.remove('selected-glow');
+                selectedDraggable = draggable;
+                draggable.classList.add('selected-glow');
+            };
+            draggable.addEventListener('click', handleSelect);
+        });
+
+        dropZones.forEach(zone => {
+            // Drag over events
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if(!zone.classList.contains('filled')) {
+                    zone.classList.add('dragover');
+                }
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+
+            // Handle placement logic
+            const handlePlacement = (itemType) => {
+                if(!itemType) return false;
+
+                const targetType = zone.getAttribute('data-target');
+                const originalItem = document.querySelector(`.drag-item[data-type="${itemType}"]`);
+
+                if(itemType === targetType && !zone.classList.contains('filled')) {
+                    zone.classList.add('filled');
+                    if(originalItem) {
+                        zone.innerHTML = originalItem.innerHTML;
+                        originalItem.style.display = 'none';
+                    }
+                    completed++;
+
+                    // Success bounce
+                    zone.style.transform = 'scale(1.05)';
+                    setTimeout(() => zone.style.transform = 'scale(1)', 200);
+
+                    if(completed === 4) {
+                        setTimeout(() => {
+                            document.getElementById('successOverlay').style.display = 'flex';
+                            triggerConfetti();
+                        }, 600);
+                    }
+                    return true;
+                } else if (!zone.classList.contains('filled')) {
+                    // Error shake
+                    zone.style.transform = 'translateX(10px)';
+                    zone.style.borderColor = '#ff0055';
+                    zone.style.color = '#ff0055';
+                    setTimeout(() => zone.style.transform = 'translateX(-10px)', 100);
+                    setTimeout(() => zone.style.transform = 'translateX(0)', 200);
+                    setTimeout(() => {
+                        zone.style.borderColor = 'rgba(255,255,255,0.2)';
+                        zone.style.color = 'rgba(255,255,255,0.3)';
+                    }, 500);
+                    return false;
+                }
+                return false;
+            };
+
+            // Drop event
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const draggedType = e.dataTransfer.getData('text/plain');
+                handlePlacement(draggedType);
+            });
+
+            // Click event for mobile/fallback support
+            zone.addEventListener('click', () => {
+                if(selectedDraggable) {
+                    const type = selectedDraggable.getAttribute('data-type');
+                    handlePlacement(type);
+                    selectedDraggable.classList.remove('selected-glow');
+                    selectedDraggable = null;
+                }
+            });
+        });
+
+        function triggerConfetti() {
+            for(let i=0; i<50; i++) {
+                let conf = document.createElement('div');
+                conf.style.position = 'absolute';
+                conf.style.width = Math.random() * 8 + 4 + 'px';
+                conf.style.height = Math.random() * 8 + 4 + 'px';
+                conf.style.background = ['#00e5ff', '#00b4d8', '#ffffff', '#03045e'][Math.floor(Math.random()*4)];
+                conf.style.left = '50%';
+                conf.style.top = '50%';
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                conf.style.zIndex = '100';
+                conf.style.transition = 'all 1.5s cubic-bezier(0.1, 0.8, 0.3, 1)';
+                document.getElementById('canvas-area').appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.transform = `translate(${(Math.random() - 0.5) * 600}px, ${(Math.random() - 0.5) * 600}px) rotate(${Math.random() * 720}deg)`;
+                    conf.style.opacity = '0';
+                }, 50);
+                
+                setTimeout(() => conf.remove(), 1500);
+            }
+        }
+
+        function requestWebsite() {
+            window.location.href = '/?modal=website';
+        }
+    </script>
+</body>
+</html>

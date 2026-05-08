@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Dilshan Manujaya</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { display: flex; background: #050810; min-height: 100vh; margin: 0; }
+        .sidebar { width: 250px; background: rgba(13, 17, 30, 0.9); border-right: 1px solid var(--glass-border); padding: 30px 20px; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; height: 100vh; }
+        
+        .sidebar-logo { font-family: var(--font-heading); font-size: 2rem; font-weight: 800; margin-bottom: 50px; text-align: center; }
+        .nav-btn { background: transparent; border: none; color: var(--text-secondary); text-align: left; padding: 15px 20px; font-size: 1.1rem; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
+        .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.1); color: var(--primary-color); }
+        .logout-btn { margin-top: auto; color: var(--accent-red); }
+        .logout-btn:hover { background: rgba(217, 4, 41, 0.1); }
+        
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .admin-card { background: var(--surface-color); padding: 30px; border-radius: 15px; border: 1px solid var(--glass-border); margin-bottom: 30px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--primary-color); }
+        .review-list { display: flex; flex-direction: column; gap: 20px; }
+        .review-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .review-item img { width: 80px; height: auto; border-radius: 5px; margin-right: 15px; }
+        .review-content { flex: 1; }
+        .review-content h4 { color: var(--primary-color); margin-bottom: 5px; }
+        .delete-btn { background: var(--accent-red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <script>
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = '/login.html';
+        }
+    </script>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-d">d</span><span class="logo-m">m</span>
+        </div>
+        <button class="nav-btn active" id="btn-reviews"><i class="fas fa-star"></i> Manage Reviews</button>
+        <button class="nav-btn" id="btn-settings"><i class="fas fa-cog"></i> Site Settings</button>
+        <button class="nav-btn logout-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div class="main-content">
+        <!-- REVIEWS TAB -->
+        <div id="reviews-tab" class="tab-content active">
+            <h2 style="margin-bottom: 30px;">Manage <span class="highlight">Reviews</span></h2>
+            
+            <div class="admin-card">
+                <h3>Add Single Review</h3>
+                <form id="addReviewForm" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <input type="text" id="clientName" placeholder="e.g. Ashen Malaka" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Platform</label>
+                        <select id="platform">
+                            <option value="Facebook">Facebook</option>
+                            <option value="YouTube">YouTube</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Short Description (Optional)</label>
+                        <textarea id="reviewText" rows="3" placeholder="Summary of the review"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Screenshot (Required)</label>
+                        <input type="file" id="reviewImage" accept="image/*" required style="padding: 10px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Upload Review</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h3>Fast Bulk Upload</h3>
+                <form id="bulkUploadForm">
+                    <div class="form-group">
+                        <label>Select Multiple Screenshots</label>
+                        <input type="file" id="bulkImages" accept="image/*" multiple required style="padding: 10px;">
+                    </div>
+                    <button type="submit" class="btn btn-secondary" id="bulkSubmitBtn">Upload All</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h3>Current Reviews</h3>
+                <div class="review-list" id="reviewList" style="margin-top: 20px;">
+                    <p>Loading reviews...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings-tab" class="tab-content">
+            <h2 style="margin-bottom: 30px;">Site <span class="highlight">Settings</span></h2>
+            
+            <div class="admin-card">
+                <form id="settingsForm">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-color);">Contact Information</h3>
+                    <div class="form-group">
+                        <label>Custom Website Logo (Optional)</label>
+                        <input type="file" id="set-logo" accept="image/*" style="padding: 10px;">
+                        <small style="color: var(--text-secondary);">Leave blank to keep current logo.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number (e.g. 94700000000 - No '+' sign)</label>
+                        <input type="text" id="set-whatsapp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Phone Number (e.g. +94 7X XXX XXXX)</label>
+                        <input type="text" id="set-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="set-email" required>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 20px; margin-top: 40px; color: var(--primary-color);">Social Media Links</h3>
+                    <div class="form-group">
+                        <label>Facebook URL</label>
+                        <input type="text" id="set-facebook" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="text" id="set-youtube" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn URL</label>
+                        <input type="text" id="set-linkedin" placeholder="https://linkedin.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram URL</label>
+                        <input type="text" id="set-instagram" placeholder="https://instagram.com/...">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="saveSettingsBtn" style="margin-top: 20px;">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js?v=4"></script>
+</body>
+</html>

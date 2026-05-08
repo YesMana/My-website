@@ -1,0 +1,14 @@
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.GeneratedMSBuildEditorConfig.editorconfig
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.AssemblyInfoInputs.cache
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.AssemblyInfo.cs
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.csproj.CoreCompileInputs.cache
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\SinhalaTool.exe
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\SinhalaTool.deps.json
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\SinhalaTool.runtimeconfig.json
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\SinhalaTool.dll
+D:\mywebsite\SinhalaDesktopApp\bin\Release\net9.0-windows\win-x64\SinhalaTool.pdb
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.dll
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\refint\SinhalaTool.dll
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.pdb
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\SinhalaTool.genruntimeconfig.cache
+D:\mywebsite\SinhalaDesktopApp\obj\Release\net9.0-windows\win-x64\ref\SinhalaTool.dll
