@@ -284,64 +284,53 @@ document.addEventListener('DOMContentLoaded', () => {
         particlesJS('particles-js', {
             "particles": {
                 "number": {
-                    "value": 60,
+                    "value": 80,
                     "density": {
                         "enable": true,
                         "value_area": 800
                     }
                 },
                 "color": {
-                    "value": ["#00e5ff", "#00b4d8", "#03045e"]
+                    "value": ["#00e5ff", "#00b4d8", "#ffffff"]
                 },
                 "shape": {
                     "type": "circle",
                     "stroke": {
                         "width": 0,
                         "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
                     }
                 },
                 "opacity": {
-                    "value": 0.5,
-                    "random": true,
+                    "value": 0.6,
+                    "random": false,
                     "anim": {
-                        "enable": true,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
+                        "enable": false
                     }
                 },
                 "size": {
                     "value": 3,
                     "random": true,
                     "anim": {
-                        "enable": true,
-                        "speed": 2,
-                        "size_min": 0.1,
-                        "sync": false
+                        "enable": false
                     }
                 },
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
                     "color": "#00e5ff",
-                    "opacity": 0.2,
+                    "opacity": 0.3,
                     "width": 1
                 },
                 "move": {
                     "enable": true,
                     "speed": 1.5,
-                    "direction": "none",
-                    "random": true,
+                    "direction": "top",
+                    "random": false,
                     "straight": false,
                     "out_mode": "out",
                     "bounce": false,
                     "attract": {
-                        "enable": true,
-                        "rotateX": 600,
-                        "rotateY": 1200
+                        "enable": false
                     }
                 }
             },
@@ -350,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "events": {
                     "onhover": {
                         "enable": true,
-                        "mode": "repulse"
+                        "mode": "grab"
                     },
                     "onclick": {
                         "enable": true,
@@ -360,27 +349,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 "modes": {
                     "grab": {
-                        "distance": 140,
+                        "distance": 200,
                         "line_linked": {
                             "opacity": 0.8
                         }
                     },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 150,
-                        "duration": 0.4
-                    },
                     "push": {
                         "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
                     }
                 }
             },
